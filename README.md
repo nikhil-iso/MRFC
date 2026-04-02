@@ -1,6 +1,6 @@
 # MRFC
 
-MRFC is a PlatformIO firmware project targeting a Teensy 4.1. The current codebase is an early flight-computer sensor prototype that reads an MPU6050 IMU and a BME280 barometric sensor, calibrates a ground-pressure baseline at startup, and streams filtered telemetry over serial as CSV.
+MRFC is a PlatformIO firmware project targeting a Teensy 4.1. The current codebase is an early flight-computer sensor prototype that reads an MPU6050 IMU and a BME280 barometric sensor, calibrates a ground-pressure baseline at startup, emits a short buzzer-ready chirp on successful initialization, and streams filtered telemetry over serial as CSV.
 
 ## Current Status
 
@@ -8,6 +8,7 @@ The project is in a sensor-validation phase. It is not yet a complete flight com
 
 - Initializing the MPU6050 and BME280 on I2C
 - Calibrating baseline pressure over a 3 second stationary startup window
+- Driving an active startup buzzer on Teensy pin `5` after initialization succeeds
 - Computing relative altitude from live pressure
 - Smoothing altitude and total acceleration with simple filters
 - Emitting a CSV telemetry stream for logging and tuning
@@ -29,6 +30,7 @@ Not yet implemented:
   - MPU6050 IMU
   - BME280 barometric sensor
 - Bus: I2C via `Wire`
+- Buzzer: active buzzer signal on Teensy pin `5`
 - Serial baud: `115200`
 - Loop period: `50 ms` nominal
 - BME280 address: `0x77`

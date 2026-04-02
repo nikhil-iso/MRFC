@@ -10,6 +10,7 @@ The code today:
 
 - Reads an MPU6050 and BME280 over I2C
 - Calibrates baseline pressure during startup
+- Plays a short startup-ready chirp on an active buzzer connected to pin `5`
 - Computes relative altitude from pressure
 - Applies simple smoothing to altitude and total acceleration
 - Streams sensor and derived values as CSV over serial
@@ -53,6 +54,7 @@ Operational constants currently in code:
 - Sampling period: `50 ms`
 - Pressure calibration duration: `3000 ms`
 - Pressure calibration interval: `50 ms`
+- Buzzer signal pin: `5`
 - BME280 I2C address: `0x77`
 - MPU6050 accel range: `+/-16 g`
 - MPU6050 gyro range: `+/-1000 deg/s`

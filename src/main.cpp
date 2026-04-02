@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <SD.h>
 #include <Adafruit_BME280.h>
 #include <MPU6050.h>
 #include <math.h>
+#include <stdio.h>
 
 namespace {
 
@@ -17,6 +19,8 @@ constexpr uint8_t kMpuGyroRange = MPU6050_GYRO_FS_1000;
 constexpr float kAltitudeFilterAlpha = 0.2f;
 constexpr float kAccelFilterAlpha = 0.2f;
 constexpr size_t kAccelAverageWindowSize = 5;
+constexpr uint32_t kSdFlushIntervalSamples = 20;
+constexpr size_t kLogFileNameLength = 13;
 
 constexpr float accelScaleLsbPerG(uint8_t range) {
   switch (range) {
@@ -56,6 +60,27 @@ float altitudeFilteredM = 0.0f;
 float totalAccelFilteredG = 0.0f;
 bool altitudeFilterInitialized = false;
 bool totalAccelFilterInitialized = false;
+File telemetryLogFile;
+bool sdLoggingEnabled = false;
+uint32_t samplesSinceFlush = 0;
+char telemetryLogFileName[kLogFileNameLength] = {};
+
+struct TelemetrySample {
+  unsigned long timeMs = 0;
+  float axG = 0.0f;
+  float ayG = 0.0f;
+  float azG = 0.0f;
+  float gxDegS = 0.0f;
+  float gyDegS = 0.0f;
+  float gzDegS = 0.0f;
+  float tempC = 0.0f;
+  float pressurePa = 0.0f;
+  float pressureBaselinePa = 0.0f;
+  float altitudeRelM = 0.0f;
+  float altitudeLpfM = 0.0f;
+  float totalAccelG = 0.0f;
+  float totalAccelLpfG = 0.0f;
+};
 
 struct MovingAverageFilter {
   float samples[kAccelAverageWindowSize] = {};
@@ -88,6 +113,47 @@ MovingAverageFilter totalAccelAverageFilter;
   }
 }
 
+bool writeCsvHeader(Print &output) {
+  return output.println(
+             "time_ms,ax_g,ay_g,az_g,gx_deg_s,gy_deg_s,gz_deg_s,temp_C,"
+             "pressure_Pa,pressure_baseline_Pa,altitude_rel_m,"
+             "altitude_lpf_m,a_total_g,a_total_lpf_g") > 0;
+}
+
+bool writeCsvRow(Print &output, const TelemetrySample &sample) {
+  bool success = true;
+
+  success &= output.print(sample.timeMs) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.axG, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.ayG, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.azG, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.gxDegS, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.gyDegS, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.gzDegS, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.tempC, 2) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.pressurePa, 2) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.pressureBaselinePa, 2) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.altitudeRelM, 2) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.altitudeLpfM, 2) > 0;
+  success &= output.print(",") > 0;
+  success &= output.print(sample.totalAccelG, 4) > 0;
+  success &= output.print(",") > 0;
+  success &= output.println(sample.totalAccelLpfG, 4) > 0;
+
+  return success;
+}
+
 float applyLowPassFilter(float sample, float alpha, float &state,
                          bool &initialized) {
   if (!initialized) {
@@ -107,6 +173,111 @@ float computeRelativeAltitudeMeters(float pressurePa) {
 void configureMpuRanges() {
   mpu.setFullScaleAccelRange(kMpuAccelRange);
   mpu.setFullScaleGyroRange(kMpuGyroRange);
+}
+
+void disableSdLogging(const char *message) {
+  Serial.println(message);
+
+  if (telemetryLogFile) {
+    telemetryLogFile.close();
+  }
+
+  sdLoggingEnabled = false;
+  samplesSinceFlush = 0;
+  telemetryLogFileName[0] = '\0';
+}
+
+bool findNextLogFileName(char *buffer, size_t bufferLength) {
+  for (uint8_t index = 0; index < 100; ++index) {
+    if (snprintf(buffer, bufferLength, "FLIGHT%02u.CSV", index) <= 0) {
+      return false;
+    }
+
+    if (!SD.exists(buffer)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void initializeSdLogging() {
+  if (!SD.begin(BUILTIN_SDCARD)) {
+    Serial.println(
+        "WARNING: SD card initialization failed. Continuing with serial "
+        "telemetry only.");
+    return;
+  }
+
+  if (!findNextLogFileName(telemetryLogFileName, sizeof(telemetryLogFileName))) {
+    Serial.println(
+        "WARNING: No free FLIGHTNN.CSV filename found on SD card. Continuing "
+        "with serial telemetry only.");
+    return;
+  }
+
+  telemetryLogFile = SD.open(telemetryLogFileName, FILE_WRITE);
+  if (!telemetryLogFile) {
+    Serial.println(
+        "WARNING: Could not open SD log file. Continuing with serial telemetry "
+        "only.");
+    telemetryLogFileName[0] = '\0';
+    return;
+  }
+
+  telemetryLogFile.clearWriteError();
+  if (!writeCsvHeader(telemetryLogFile) || telemetryLogFile.getWriteError() != 0) {
+    disableSdLogging(
+        "WARNING: Failed to write CSV header to SD log file. Continuing with "
+        "serial telemetry only.");
+    return;
+  }
+
+  telemetryLogFile.clearWriteError();
+  telemetryLogFile.flush();
+  if (telemetryLogFile.getWriteError() != 0) {
+    disableSdLogging(
+        "WARNING: Failed to flush SD log header. Continuing with serial "
+        "telemetry only.");
+    return;
+  }
+
+  sdLoggingEnabled = true;
+  samplesSinceFlush = 0;
+
+  Serial.print("SD logging to ");
+  Serial.println(telemetryLogFileName);
+}
+
+void logTelemetryToSd(const TelemetrySample &sample) {
+  if (!sdLoggingEnabled) {
+    return;
+  }
+
+  telemetryLogFile.clearWriteError();
+  if (!writeCsvRow(telemetryLogFile, sample) ||
+      telemetryLogFile.getWriteError() != 0) {
+    disableSdLogging(
+        "WARNING: SD log write failed. Disabling SD logging and continuing "
+        "serial telemetry.");
+    return;
+  }
+
+  ++samplesSinceFlush;
+  if (samplesSinceFlush < kSdFlushIntervalSamples) {
+    return;
+  }
+
+  telemetryLogFile.clearWriteError();
+  telemetryLogFile.flush();
+  if (telemetryLogFile.getWriteError() != 0) {
+    disableSdLogging(
+        "WARNING: SD log flush failed. Disabling SD logging and continuing "
+        "serial telemetry.");
+    return;
+  }
+
+  samplesSinceFlush = 0;
 }
 
 void calibrateGroundPressure() {
@@ -157,10 +328,8 @@ void setup() {
 
   Serial.println("BME280 initialized");
   calibrateGroundPressure();
-  Serial.println(
-      "time_ms,ax_g,ay_g,az_g,gx_deg_s,gy_deg_s,gz_deg_s,temp_C,pressure_Pa,"
-      "pressure_baseline_Pa,altitude_rel_m,altitude_lpf_m,a_total_g,"
-      "a_total_lpf_g");
+  initializeSdLogging();
+  writeCsvHeader(Serial);
 }
 
 void loop() {
@@ -212,31 +381,12 @@ void loop() {
       applyLowPassFilter(totalAccelAverageG, kAccelFilterAlpha,
                          totalAccelFilteredG, totalAccelFilterInitialized);
 
-  Serial.print(time_ms);
-  Serial.print(",");
-  Serial.print(ax_g, 4);
-  Serial.print(",");
-  Serial.print(ay_g, 4);
-  Serial.print(",");
-  Serial.print(az_g, 4);
-  Serial.print(",");
-  Serial.print(gx_deg_s, 4);
-  Serial.print(",");
-  Serial.print(gy_deg_s, 4);
-  Serial.print(",");
-  Serial.print(gz_deg_s, 4);
-  Serial.print(",");
-  Serial.print(temp_C, 2);
-  Serial.print(",");
-  Serial.print(pressure_Pa, 2);
-  Serial.print(",");
-  Serial.print(pressureBaselinePa, 2);
-  Serial.print(",");
-  Serial.print(altitudeRelM, 2);
-  Serial.print(",");
-  Serial.print(altitudeLpfM, 2);
-  Serial.print(",");
-  Serial.print(totalAccelG, 4);
-  Serial.print(",");
-  Serial.println(totalAccelLpfG, 4);
+  const TelemetrySample sample{
+      time_ms,        ax_g,              ay_g,       az_g, gx_deg_s,
+      gy_deg_s,       gz_deg_s,          temp_C,     pressure_Pa,
+      pressureBaselinePa, altitudeRelM, altitudeLpfM, totalAccelG,
+      totalAccelLpfG};
+
+  writeCsvRow(Serial, sample);
+  logTelemetryToSd(sample);
 }

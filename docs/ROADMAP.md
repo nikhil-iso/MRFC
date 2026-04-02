@@ -6,7 +6,7 @@ This roadmap is organized from the current prototype state toward a more complet
 
 ## Phase 0: Sensor Bring-Up
 
-Status: In progress / mostly achieved
+Status: Mostly achieved
 
 Scope:
 
@@ -14,6 +14,7 @@ Scope:
 - Confirm MPU6050 communication
 - Confirm BME280 communication
 - Establish serial telemetry output
+- Add initial onboard CSV session logging
 - Add startup ground-pressure calibration
 - Add basic smoothing for noisy signals
 
@@ -21,7 +22,7 @@ Exit criteria:
 
 - Stable boot
 - Reliable sensor readings
-- Consistent CSV output for bench capture
+- Consistent CSV output for bench capture and SD session logging
 
 ## Phase 1: Internal Structure
 
@@ -57,7 +58,7 @@ Exit criteria:
 
 Scope:
 
-- Add onboard logging
+- Expand onboard logging beyond raw CSV session capture
 - Define a compact and replayable telemetry/log format
 - Add boot diagnostics and fault reporting
 - Capture configuration values used for each run

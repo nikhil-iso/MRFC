@@ -2,7 +2,7 @@
 
 ## What This Repository Is
 
-This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, and serial telemetry.
+This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, serial telemetry, and onboard CSV session logging.
 
 This is a prototype foundation, not a complete avionics stack.
 
@@ -22,6 +22,7 @@ The current firmware lives entirely in `src/main.cpp` and performs the following
 10. Computes relative altitude from pressure
 11. Filters altitude and total acceleration
 12. Emits CSV telemetry over serial
+13. Writes the same CSV rows to an onboard SD card log file when available
 
 ## Derived Signals
 
@@ -52,7 +53,7 @@ Current known limitations:
 - No explicit flight-state machine
 - No apogee detection logic
 - No deployment outputs or safety interlocks
-- No SD logging or non-volatile event storage
+- No structured event/fault logging beyond raw SD CSV session capture
 - No watchdog or fault-recovery behavior
 - No redundancy or cross-checking between sensors
 - No tests

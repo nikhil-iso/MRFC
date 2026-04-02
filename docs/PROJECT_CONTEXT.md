@@ -2,7 +2,7 @@
 
 ## What This Repository Is
 
-This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, and serial telemetry.
+This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, a simple startup buzzer indicator, and serial telemetry.
 
 This is a prototype foundation, not a complete avionics stack.
 
@@ -17,11 +17,12 @@ The current firmware lives entirely in `src/main.cpp` and performs the following
 5. Sets MPU6050 ranges to `+/-16 g` and `+/-1000 deg/s`
 6. Initializes the BME280 at address `0x77`
 7. Calibrates baseline pressure over `3 seconds` while stationary
-8. Enters a nominal `50 ms` loop
-9. Reads IMU and barometric data
-10. Computes relative altitude from pressure
-11. Filters altitude and total acceleration
-12. Emits CSV telemetry over serial
+8. Emits a short active-buzzer chirp on pin `5` to confirm successful startup
+9. Enters a nominal `50 ms` loop
+10. Reads IMU and barometric data
+11. Computes relative altitude from pressure
+12. Filters altitude and total acceleration
+13. Emits CSV telemetry over serial
 
 ## Derived Signals
 
@@ -52,6 +53,7 @@ Current known limitations:
 - No explicit flight-state machine
 - No apogee detection logic
 - No deployment outputs or safety interlocks
+- Startup buzzer is only a post-init readiness indicator and not tied to runtime events
 - No SD logging or non-volatile event storage
 - No watchdog or fault-recovery behavior
 - No redundancy or cross-checking between sensors

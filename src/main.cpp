@@ -11,12 +11,16 @@ constexpr uint32_t kStartupDelayMs = 2000;
 constexpr uint32_t kLoopPeriodMs = 50;
 constexpr uint32_t kCalibrationDurationMs = 3000;
 constexpr uint32_t kCalibrationSampleIntervalMs = 50;
+constexpr uint8_t kBuzzerPin = 5;
 constexpr uint8_t kBme280Address = 0x77;
 constexpr uint8_t kMpuAccelRange = MPU6050_ACCEL_FS_16;
 constexpr uint8_t kMpuGyroRange = MPU6050_GYRO_FS_1000;
 constexpr float kAltitudeFilterAlpha = 0.2f;
 constexpr float kAccelFilterAlpha = 0.2f;
 constexpr size_t kAccelAverageWindowSize = 5;
+constexpr uint32_t kBuzzerPulseOnMs = 120;
+constexpr uint32_t kBuzzerPulseOffMs = 80;
+constexpr uint8_t kStartupChirpPulseCount = 2;
 
 constexpr float accelScaleLsbPerG(uint8_t range) {
   switch (range) {
@@ -109,6 +113,23 @@ void configureMpuRanges() {
   mpu.setFullScaleGyroRange(kMpuGyroRange);
 }
 
+void configureBuzzer() {
+  pinMode(kBuzzerPin, OUTPUT);
+  digitalWrite(kBuzzerPin, LOW);
+}
+
+void playStartupChirp() {
+  for (uint8_t pulse = 0; pulse < kStartupChirpPulseCount; ++pulse) {
+    digitalWrite(kBuzzerPin, HIGH);
+    delay(kBuzzerPulseOnMs);
+    digitalWrite(kBuzzerPin, LOW);
+
+    if (pulse + 1 < kStartupChirpPulseCount) {
+      delay(kBuzzerPulseOffMs);
+    }
+  }
+}
+
 void calibrateGroundPressure() {
   Serial.println("Calibrating ground pressure for 3 seconds. Keep the system stationary.");
 
@@ -135,6 +156,7 @@ void calibrateGroundPressure() {
 }  // namespace
 
 void setup() {
+  configureBuzzer();
   Serial.begin(kSerialBaud);
   delay(kStartupDelayMs);
 
@@ -157,6 +179,7 @@ void setup() {
 
   Serial.println("BME280 initialized");
   calibrateGroundPressure();
+  playStartupChirp();
   Serial.println(
       "time_ms,ax_g,ay_g,az_g,gx_deg_s,gy_deg_s,gz_deg_s,temp_C,pressure_Pa,"
       "pressure_baseline_Pa,altitude_rel_m,altitude_lpf_m,a_total_g,"

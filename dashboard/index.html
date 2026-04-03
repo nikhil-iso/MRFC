@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MRFC IMU Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="title-block">
+          <p class="eyebrow">MRFC Bench Tool</p>
+          <h1>IMU Dashboard</h1>
+          <p class="intro">
+            Live MPU6050 accelerometer, gyroscope, and relative orientation from
+            the Teensy serial CSV stream.
+          </p>
+        </div>
+
+        <div class="control-strip">
+          <button id="connectButton" class="button button--primary">
+            Connect Serial
+          </button>
+          <button id="disconnectButton" class="button" disabled>
+            Disconnect
+          </button>
+          <button id="resetOrientationButton" class="button" disabled>
+            Reset Orientation
+          </button>
+        </div>
+
+        <div class="status-strip">
+          <article class="status-card">
+            <span>Connection</span>
+            <strong id="connectionStatus">Disconnected</strong>
+          </article>
+          <article class="status-card">
+            <span>Stream</span>
+            <strong id="streamStatus">Idle</strong>
+          </article>
+          <article class="status-card">
+            <span>Samples</span>
+            <strong id="sampleCount">0</strong>
+          </article>
+          <article class="status-card">
+            <span>Last Packet</span>
+            <strong id="lastPacketAge">--</strong>
+          </article>
+        </div>
+
+        <p id="supportMessage" class="support-message">
+          Open this dashboard from <code>localhost</code> in Chrome or Edge for
+          Web Serial access.
+        </p>
+      </header>
+
+      <main class="dashboard-grid">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Linear acceleration</p>
+              <h2>Accelerometer</h2>
+            </div>
+            <div class="legend">
+              <span class="legend-chip legend-chip--x">X</span>
+              <span class="legend-chip legend-chip--y">Y</span>
+              <span class="legend-chip legend-chip--z">Z</span>
+            </div>
+          </div>
+
+          <div class="value-grid">
+            <article class="value-card">
+              <span class="value-label">X</span>
+              <strong id="axValue">--</strong>
+              <small>g</small>
+            </article>
+            <article class="value-card">
+              <span class="value-label">Y</span>
+              <strong id="ayValue">--</strong>
+              <small>g</small>
+            </article>
+            <article class="value-card">
+              <span class="value-label">Z</span>
+              <strong id="azValue">--</strong>
+              <small>g</small>
+            </article>
+          </div>
+
+          <canvas
+            id="accelChart"
+            class="chart"
+            width="640"
+            height="240"
+            aria-label="Accelerometer chart"
+          ></canvas>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Angular velocity</p>
+              <h2>Gyroscope</h2>
+            </div>
+            <div class="legend">
+              <span class="legend-chip legend-chip--x">X</span>
+              <span class="legend-chip legend-chip--y">Y</span>
+              <span class="legend-chip legend-chip--z">Z</span>
+            </div>
+          </div>
+
+          <div class="value-grid">
+            <article class="value-card">
+              <span class="value-label">X</span>
+              <strong id="gxValue">--</strong>
+              <small>deg/s</small>
+            </article>
+            <article class="value-card">
+              <span class="value-label">Y</span>
+              <strong id="gyValue">--</strong>
+              <small>deg/s</small>
+            </article>
+            <article class="value-card">
+              <span class="value-label">Z</span>
+              <strong id="gzValue">--</strong>
+              <small>deg/s</small>
+            </article>
+          </div>
+
+          <canvas
+            id="gyroChart"
+            class="chart"
+            width="640"
+            height="240"
+            aria-label="Gyroscope chart"
+          ></canvas>
+        </section>
+
+        <section class="panel panel--orientation">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Relative attitude</p>
+              <h2>Orientation</h2>
+            </div>
+            <p class="panel-note">
+              Pitch and roll are stabilized with accelerometer tilt. Yaw is
+              relative and will drift over time.
+            </p>
+          </div>
+
+          <div class="orientation-layout">
+            <div class="orientation-stage">
+              <div class="scene">
+                <div id="boardModel" class="board">
+                  <div class="face face--top">TOP</div>
+                  <div class="face face--bottom">BOTTOM</div>
+                  <div class="face face--front">FRONT</div>
+                  <div class="face face--back">BACK</div>
+                  <div class="face face--left">LEFT</div>
+                  <div class="face face--right">RIGHT</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="value-grid value-grid--orientation">
+              <article class="value-card">
+                <span class="value-label">Pitch</span>
+                <strong id="pitchValue">0.0</strong>
+                <small>deg</small>
+              </article>
+              <article class="value-card">
+                <span class="value-label">Roll</span>
+                <strong id="rollValue">0.0</strong>
+                <small>deg</small>
+              </article>
+              <article class="value-card">
+                <span class="value-label">Yaw</span>
+                <strong id="yawValue">0.0</strong>
+                <small>deg</small>
+              </article>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -2,6 +2,8 @@
 
 MRFC is a PlatformIO firmware project targeting a Teensy 4.1. The current codebase is an early flight-computer sensor prototype that reads an MPU6050 IMU and a BME280 barometric sensor, calibrates a ground-pressure baseline at startup, emits a short buzzer-ready chirp on successful initialization, and streams filtered telemetry over serial as CSV.
 
+The repo also includes a small browser-based IMU dashboard under `dashboard/` for bench visualization of the MPU6050 without using Processing or an external desktop app.
+
 ## Current Status
 
 The project is in a sensor-validation phase. It is not yet a complete flight computer. The firmware currently focuses on:
@@ -50,9 +52,33 @@ The firmware prints CSV with the following columns:
 - `a_total_g`
 - `a_total_lpf_g`
 
+## Bench IMU Dashboard
+
+The `dashboard/` folder contains a self-contained local browser tool that reads the existing Teensy CSV stream over Web Serial and shows:
+
+- live accelerometer values and rolling plots
+- live gyroscope values and rolling plots
+- a simple 3D board view for relative orientation
+
+Run it from the repo root with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\dashboard\serve.ps1
+```
+
+Then open `http://localhost:8732` in Chrome or Edge, click `Connect Serial`, and select the Teensy serial port.
+
+Notes:
+
+- The dashboard ignores startup text until it sees the CSV header.
+- Pitch and roll are stabilized with a simple complementary filter.
+- Yaw is relative only and will drift over time because there is no magnetometer.
+- If Web Serial is blocked in your environment, the next fallback is a tiny Node serial bridge with the same browser UI. A Python desktop tool is the second fallback.
+
 ## Repo Layout
 
 - `src/main.cpp`: Current firmware implementation
+- `dashboard/`: Local browser dashboard and localhost server script for MPU6050 bench visualization
 - `platformio.ini`: Build target and library dependencies
 - `include/`: Reserved for shared headers
 - `lib/`: Reserved for project-specific libraries

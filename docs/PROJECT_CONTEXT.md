@@ -4,6 +4,8 @@
 
 This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, a simple startup buzzer indicator, and serial telemetry.
 
+The repo also includes a lightweight browser-based bench dashboard under `dashboard/` that consumes the existing serial CSV stream for MPU6050 visualization.
+
 This is a prototype foundation, not a complete avionics stack.
 
 ## What The Firmware Does Today
@@ -45,6 +47,22 @@ The current code structure is intentionally minimal:
 - No classes or modules for sensor adapters, filters, or flight states
 
 This keeps the prototype easy to inspect, but it will become limiting as features grow.
+
+## Bench Dashboard
+
+The optional host-side dashboard currently:
+
+- Runs locally in a browser via Web Serial
+- Connects directly to the Teensy CSV stream at `115200`
+- Displays live accelerometer and gyroscope values
+- Draws rolling charts for IMU axes
+- Renders a simple relative orientation view using a complementary filter
+
+The orientation display is a bench aid only:
+
+- Pitch and roll are stabilized using accelerometer tilt
+- Yaw is relative from connect or reset and will drift over time
+- It is not flight-grade attitude estimation
 
 ## Constraints And Risks
 

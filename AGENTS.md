@@ -6,6 +6,8 @@ This file is the fast-start context for Codex and other AI coding tools working 
 
 MRFC is currently a Teensy 4.1 firmware prototype for a rocket flight computer. The present implementation is a sensor-test and telemetry stage, not a production flight stack.
 
+The repo also contains an optional local browser dashboard in `dashboard/` for bench visualization of MPU6050 data from the existing serial CSV stream.
+
 The code today:
 
 - Reads an MPU6050 and BME280 over I2C
@@ -14,6 +16,7 @@ The code today:
 - Computes relative altitude from pressure
 - Applies simple smoothing to altitude and total acceleration
 - Streams sensor and derived values as CSV over serial
+- Provides a simple host-side IMU dashboard for live accelerometer, gyroscope, and relative orientation viewing
 
 The code does not yet:
 

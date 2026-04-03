@@ -19,7 +19,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.65882355 0.57254905 0.45490196
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\spiral-wound-alpha.png
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/spiral-wound-alpha.png
 newmtl mat_4_Bulkhead
 illum 2
 Ns 0.0
@@ -27,7 +27,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\wood.jpg
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/wood.jpg
 newmtl mat_5_Body tube
 illum 2
 Ns 225.00002
@@ -42,7 +42,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\wood.jpg
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/wood.jpg
 newmtl mat_7_Body tube
 illum 2
 Ns 75.0
@@ -50,7 +50,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.65882355 0.57254905 0.45490196
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\spiral-wound-alpha.png
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/spiral-wound-alpha.png
 newmtl mat_7_Body tube_H100W_DMS
 illum 2
 Ns 0.0
@@ -58,7 +58,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\aerotech.png
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/aerotech.png
 newmtl mat_8_Centering ring
 illum 2
 Ns 0.0
@@ -66,7 +66,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\wood.jpg
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/wood.jpg
 newmtl mat_9_FS-PK5
 illum 2
 Ns 225.00002
@@ -81,7 +81,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\wadding.png
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/wadding.png
 newmtl mat_11_Shock cord
 illum 2
 Ns 0.0
@@ -89,7 +89,7 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\wadding.png
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/wadding.png
 newmtl mat_12_Parachute
 illum 2
 Ns 0.0
@@ -97,4 +97,4 @@ d 1.0
 Ka 0.0 0.0 0.0
 Kd 0.003921569 0.003921569 0.003921569
 Ks 0.25 0.25 0.25
-map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off C:\Users\nikhi\Documents\MRFC\OpenRocket\PK-5-Nuke-Pro-Max\PK-5-Nuke-Pro-Max OBJ_img\chute.jpg
+map_Kd -o 0.0 0.0 0.0 -s 1.0 1.0 1.0 -clamp off PK-5-Nuke-Pro-Max OBJ_img/chute.jpg

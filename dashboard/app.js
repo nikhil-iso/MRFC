@@ -1,5 +1,21 @@
 const BAUD_RATE = 115200;
 const MAX_SAMPLES = 180;
+const TELEMETRY_COLUMNS = [
+  "time_ms",
+  "ax_g",
+  "ay_g",
+  "az_g",
+  "gx_deg_s",
+  "gy_deg_s",
+  "gz_deg_s",
+  "temp_C",
+  "pressure_Pa",
+  "pressure_baseline_Pa",
+  "altitude_rel_m",
+  "altitude_lpf_m",
+  "a_total_g",
+  "a_total_lpf_g",
+];
 const REQUIRED_COLUMNS = [
   "time_ms",
   "ax_g",
@@ -14,6 +30,10 @@ const AXIS_COLORS = {
   y: "#4dd39a",
   z: "#59b8ff",
 };
+const DEFAULT_HEADER_MAP = TELEMETRY_COLUMNS.reduce((map, column, index) => {
+  map[column] = index;
+  return map;
+}, {});
 
 class RingBuffer {
   constructor(capacity) {
@@ -223,6 +243,30 @@ function detectHeader(line) {
   return true;
 }
 
+function looksLikeTelemetryRow(line) {
+  const values = line.split(",");
+  if (values.length < TELEMETRY_COLUMNS.length) {
+    return false;
+  }
+
+  for (const column of REQUIRED_COLUMNS) {
+    const parsedValue = Number.parseFloat(values[DEFAULT_HEADER_MAP[column]]);
+    if (!Number.isFinite(parsedValue)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function enableDefaultHeaderMap() {
+  state.headerMap = DEFAULT_HEADER_MAP;
+  setStreamStatus("Streaming");
+  setSupportMessage(
+    "Streaming resumed without a CSV header. Using the current firmware's default telemetry layout.",
+  );
+}
+
 function parseSample(line) {
   if (!state.headerMap) {
     return null;
@@ -277,8 +321,15 @@ function processLine(rawLine) {
   }
 
   if (!state.headerMap) {
-    detectHeader(line);
-    return;
+    if (detectHeader(line)) {
+      return;
+    }
+
+    if (!looksLikeTelemetryRow(line)) {
+      return;
+    }
+
+    enableDefaultHeaderMap();
   }
 
   const sample = parseSample(line);

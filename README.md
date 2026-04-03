@@ -70,7 +70,7 @@ Then open `http://localhost:8732` in Chrome or Edge, click `Connect Serial`, and
 
 Notes:
 
-- The dashboard ignores startup text until it sees the CSV header.
+- The dashboard prefers the CSV header when it appears, but it can also reconnect from live data rows using the current firmware telemetry order.
 - Pitch and roll are stabilized with a simple complementary filter.
 - Yaw is relative only and will drift over time because there is no magnetometer.
 - If Web Serial is blocked in your environment, the next fallback is a tiny Node serial bridge with the same browser UI. A Python desktop tool is the second fallback.

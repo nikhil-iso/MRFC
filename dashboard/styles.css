@@ -278,68 +278,50 @@ code {
 
 .scene {
   width: 260px;
-  height: 260px;
+  height: 300px;
   perspective: 900px;
   display: grid;
   place-items: center;
 }
 
-.board {
+.rocket-model {
   position: relative;
-  width: 150px;
-  height: 100px;
+  width: 170px;
+  height: 280px;
   transform-style: preserve-3d;
   transition: transform 45ms linear;
 }
 
-.face {
+.rocket-model::before {
+  position: absolute;
+  content: "";
+  left: 50%;
+  bottom: 12px;
+  width: 112px;
+  height: 24px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(12, 18, 32, 0.65), transparent 72%);
+  transform: translateX(-50%) translateZ(-26px) rotateX(90deg);
+  filter: blur(5px);
+}
+
+.rocket-model__layer {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(246, 247, 251, 0.18);
-  color: rgba(246, 247, 251, 0.9);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.2), rgba(89, 184, 255, 0.16));
-  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: center center;
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.32));
 }
 
-.face--top {
-  transform: translateZ(18px);
+.rocket-model__layer--front {
+  transform: translateZ(12px);
 }
 
-.face--bottom {
-  transform: rotateX(180deg) translateZ(18px);
-  background: linear-gradient(135deg, rgba(77, 211, 154, 0.14), rgba(20, 33, 61, 0.28));
-}
-
-.face--front,
-.face--back {
-  height: 36px;
-  top: 32px;
-}
-
-.face--front {
-  transform: rotateX(90deg) translateZ(50px);
-}
-
-.face--back {
-  transform: rotateX(-90deg) translateZ(50px);
-}
-
-.face--left,
-.face--right {
-  width: 36px;
-  left: 57px;
-}
-
-.face--left {
-  transform: rotateY(-90deg) translateZ(75px);
-}
-
-.face--right {
-  transform: rotateY(90deg) translateZ(75px);
+.rocket-model__layer--back {
+  opacity: 0.82;
+  transform: rotateY(180deg) translateZ(12px);
 }
 
 .value-grid--orientation {
@@ -387,6 +369,6 @@ code {
 
   .scene {
     width: 220px;
-    height: 220px;
+    height: 260px;
   }
 }

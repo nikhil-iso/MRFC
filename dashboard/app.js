@@ -119,7 +119,7 @@ const elements = {
   supportMessage: document.querySelector("#supportMessage"),
   accelChart: document.querySelector("#accelChart"),
   gyroChart: document.querySelector("#gyroChart"),
-  boardModel: document.querySelector("#boardModel"),
+  rocketModel: document.querySelector("#rocketModel"),
   axValue: document.querySelector("#axValue"),
   ayValue: document.querySelector("#ayValue"),
   azValue: document.querySelector("#azValue"),
@@ -477,7 +477,7 @@ function renderNumericValues() {
 
 function renderOrientationModel() {
   const { pitch, roll, yaw } = state.displayOrientationDeg;
-  elements.boardModel.style.transform =
+  elements.rocketModel.style.transform =
     `rotateZ(${yaw.toFixed(2)}deg) rotateX(${(-pitch).toFixed(2)}deg) rotateY(${roll.toFixed(2)}deg)`;
 }
 

@@ -152,13 +152,140 @@
           <div class="orientation-layout">
             <div class="orientation-stage">
               <div class="scene">
-                <div id="boardModel" class="board">
-                  <div class="face face--top">TOP</div>
-                  <div class="face face--bottom">BOTTOM</div>
-                  <div class="face face--front">FRONT</div>
-                  <div class="face face--back">BACK</div>
-                  <div class="face face--left">LEFT</div>
-                  <div class="face face--right">RIGHT</div>
+                <div id="rocketModel" class="rocket-model" aria-hidden="true">
+                  <svg
+                    class="rocket-model__layer rocket-model__layer--back"
+                    viewBox="0 0 120 300"
+                    role="presentation"
+                  >
+                    <polygon
+                      points="34,168 14,224 34,210"
+                      fill="#53627f"
+                    />
+                    <polygon
+                      points="86,168 106,224 86,210"
+                      fill="#53627f"
+                    />
+                    <path
+                      d="M60 14 L88 62 L88 198 C88 220 76 238 60 250 C44 238 32 220 32 198 L32 62 Z"
+                      fill="#7f8aa5"
+                    />
+                    <path
+                      d="M60 14 L78 46 L42 46 Z"
+                      fill="#b7c1d8"
+                    />
+                    <rect
+                      x="42"
+                      y="120"
+                      width="36"
+                      height="12"
+                      rx="6"
+                      fill="#5d6f91"
+                    />
+                    <circle
+                      cx="60"
+                      cy="92"
+                      r="11"
+                      fill="#96d7ff"
+                    />
+                    <rect
+                      x="43"
+                      y="248"
+                      width="34"
+                      height="20"
+                      rx="8"
+                      fill="#45546f"
+                    />
+                  </svg>
+                  <svg
+                    class="rocket-model__layer rocket-model__layer--front"
+                    viewBox="0 0 120 300"
+                    role="presentation"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="rocketBodyGradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                      >
+                        <stop offset="0%" stop-color="#ffe6a5" />
+                        <stop offset="42%" stop-color="#fca311" />
+                        <stop offset="100%" stop-color="#ff6b35" />
+                      </linearGradient>
+                      <linearGradient
+                        id="rocketFinGradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                      >
+                        <stop offset="0%" stop-color="#5ec8ff" />
+                        <stop offset="100%" stop-color="#1d7cc9" />
+                      </linearGradient>
+                      <linearGradient
+                        id="rocketFlameGradient"
+                        x1="50%"
+                        y1="0%"
+                        x2="50%"
+                        y2="100%"
+                      >
+                        <stop offset="0%" stop-color="#fff0b8" />
+                        <stop offset="45%" stop-color="#ffb627" />
+                        <stop offset="100%" stop-color="#ff5a36" />
+                      </linearGradient>
+                    </defs>
+                    <polygon
+                      points="34,168 14,224 34,210"
+                      fill="url(#rocketFinGradient)"
+                    />
+                    <polygon
+                      points="86,168 106,224 86,210"
+                      fill="url(#rocketFinGradient)"
+                    />
+                    <path
+                      d="M60 14 L88 62 L88 198 C88 220 76 238 60 250 C44 238 32 220 32 198 L32 62 Z"
+                      fill="url(#rocketBodyGradient)"
+                    />
+                    <path
+                      d="M60 14 L78 46 L42 46 Z"
+                      fill="#fff1c7"
+                    />
+                    <rect
+                      x="42"
+                      y="120"
+                      width="36"
+                      height="12"
+                      rx="6"
+                      fill="#16233c"
+                      opacity="0.65"
+                    />
+                    <circle
+                      cx="60"
+                      cy="92"
+                      r="12"
+                      fill="#9be5ff"
+                    />
+                    <circle
+                      cx="60"
+                      cy="92"
+                      r="6"
+                      fill="#e7fbff"
+                    />
+                    <rect
+                      x="43"
+                      y="248"
+                      width="34"
+                      height="20"
+                      rx="8"
+                      fill="#1e293f"
+                    />
+                    <path
+                      d="M60 268 C74 288 72 296 60 300 C48 296 46 288 60 268 Z"
+                      fill="url(#rocketFlameGradient)"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>

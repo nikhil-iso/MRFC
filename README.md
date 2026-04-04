@@ -14,15 +14,18 @@ The project is in a sensor-validation phase. It is not yet a complete flight com
 - Computing relative altitude from live pressure
 - Smoothing altitude and total acceleration with simple filters
 - Emitting a CSV telemetry stream for logging and tuning
+- Writing the telemetry stream to a new CSV file on the onboard SD card at each boot
+- Browsing onboard SD card files over the USB serial connection
 
 Not yet implemented:
 
 - Flight-state detection
 - Event handling for launch, burnout, apogee, and landing
 - Pyro channel control
-- Persistent data logging
 - Radio or ground-station link
 - Sensor abstractions, unit tests, or a multi-module architecture
+
+At boot, the firmware attempts to initialize the Teensy 4.1 onboard SD slot and create the next available log file in the form `/LOG000.CSV`, `/LOG001.CSV`, and so on. The file contains the same CSV header and sample rows that are emitted over serial.
 
 ## Hardware And Firmware Baseline
 
@@ -92,6 +95,20 @@ Notes:
 pio run
 pio device monitor -b 115200
 ```
+
+Once connected over serial, these commands are available:
+
+```text
+p
+r
+telemetry off
+sd ls
+sd cat /FILE.CSV
+sd current
+telemetry on
+```
+
+Typing any non-empty command now auto-pauses live telemetry on the first keystroke so the command can be entered without fighting the CSV stream.
 
 ## Recommended Reading Order For Future Work
 

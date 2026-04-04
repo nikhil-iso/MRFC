@@ -50,6 +50,9 @@ Success indicators:
 - Log format documented
 - Session metadata and fault events captured
 
+Current status:
+Started. The firmware now creates sequential boot-session CSV logs on the onboard SD card, but richer metadata and event capture are still pending.
+
 ## Milestone 5: Controlled Outputs
 
 Objective:

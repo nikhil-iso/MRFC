@@ -2,7 +2,7 @@
 
 ## What This Repository Is
 
-This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, a simple startup buzzer indicator, and serial telemetry.
+This repository contains firmware for MRFC, a Teensy 4.1 based rocket flight computer project. At the current stage, the repository is centered on proving out sensor reads, startup calibration, basic filtering, a simple startup buzzer indicator, serial telemetry, and first-pass onboard CSV logging.
 
 The repo also includes a lightweight browser-based bench dashboard under `dashboard/` that consumes the existing serial CSV stream for MPU6050 visualization.
 
@@ -20,11 +20,16 @@ The current firmware lives entirely in `src/main.cpp` and performs the following
 6. Initializes the BME280 at address `0x77`
 7. Calibrates baseline pressure over `3 seconds` while stationary
 8. Emits a short active-buzzer chirp on pin `5` to confirm successful startup
-9. Enters a nominal `50 ms` loop
-10. Reads IMU and barometric data
-11. Computes relative altitude from pressure
-12. Filters altitude and total acceleration
-13. Emits CSV telemetry over serial
+9. Initializes the Teensy 4.1 onboard SD slot if a card is present
+10. Creates the next available log file such as `/LOG000.CSV`
+11. Writes the CSV header to that file
+12. Accepts simple serial commands to list or print files from that SD card
+13. Enters a nominal `50 ms` loop
+14. Reads IMU and barometric data
+15. Computes relative altitude from pressure
+16. Filters altitude and total acceleration
+17. Emits CSV telemetry over serial
+18. Appends the same CSV rows to the active SD log file
 
 ## Derived Signals
 
@@ -58,6 +63,14 @@ The optional host-side dashboard currently:
 - Draws rolling charts for IMU axes
 - Renders a simple relative orientation view using a complementary filter
 
+The firmware also accepts a small serial command set for bench access to SD card contents without removing the card from the Teensy:
+
+- `telemetry off`
+- `sd ls`
+- `sd cat /FILE.CSV`
+- `sd current`
+- `telemetry on`
+
 The orientation display is a bench aid only:
 
 - Pitch and roll are stabilized using accelerometer tilt
@@ -72,7 +85,8 @@ Current known limitations:
 - No apogee detection logic
 - No deployment outputs or safety interlocks
 - Startup buzzer is only a post-init readiness indicator and not tied to runtime events
-- No SD logging or non-volatile event storage
+- SD access is serial-mediated only and does not appear as a USB mass-storage drive on the host computer
+- Log filenames are sequential boot-session files and do not include wall-clock timestamps
 - No watchdog or fault-recovery behavior
 - No redundancy or cross-checking between sensors
 - No tests

@@ -57,7 +57,7 @@ Exit criteria:
 
 Scope:
 
-- Add onboard logging
+- Expand the new onboard CSV logging baseline
 - Define a compact and replayable telemetry/log format
 - Add boot diagnostics and fault reporting
 - Capture configuration values used for each run
@@ -66,6 +66,11 @@ Exit criteria:
 
 - Bench and flight sessions can be reconstructed after the fact
 - Failures are diagnosable from logs
+
+Current note:
+
+- Boot-session CSV logging to the Teensy 4.1 onboard SD card is now present as a first pass
+- Logging still mirrors the live serial stream and does not yet capture richer session metadata or fault events
 
 ## Phase 4: Flight Outputs And Safety
 
